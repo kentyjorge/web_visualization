@@ -73,8 +73,8 @@ function chartcreation(person_id) {
             yaxis: {range: [0,250]},
             xaxis: {title: 'otu_ids'},
             yaxis: {title: 'values'},
-            height: 400,
-            width: 1200,
+            //height: 700,
+            width: window.width,
             magin: {t:0},
             
         };
@@ -100,8 +100,36 @@ function buildTable(person_id) {
         });
 
         // gauge functionality here as it uses the metadata
+        var gauge = [
+            {
+              domain: { x: [0, 5], y: [0, 1] },
+              value: person.wfreq,
+              text: person.wfreq,
+              title: { text: "Washing Frequency <br>scrubs per week</br>" },
+              type: "indicator",
+              mode: "gauge+number",
+              delta: { reference: 10 },
+              gauge: {
+                axis: { range: [null, 9] },
+                steps: [
+                  { range: [0, 1], color: "lightgray" },
+                  { range: [1, 2], color: "gray" },
+                  { range: [2, 3], color: "lightgreen" },
+                  { range: [3, 4], color: "green" },
+                  { range: [4, 5], color: "lightblue" },
+                  { range: [5, 6], color: "blue" },
+                  { range: [6, 7], color: "lightpurple" },
+                  { range: [7, 8], color: "purple" },
+                  { range: [8, 9], color: "red" },
+                ],
+              }
+            }
+          ];
+          
+          var glayout = { width: 400, height: 400, margin: { t: 75, r: 25, l: 25, b: 25 } };
+          Plotly.newPlot('gauge', gauge, glayout);
+          
 
-        
     });
 };
 
