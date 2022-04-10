@@ -1,7 +1,7 @@
-
-function toNum(num) {
-    return num.toString()
-}
+//1. functions for displaying bar, scatter, 
+// 2. function for demographic table and gauge
+// 3. functions init for data displayed on page load
+// 4. function for passing in new data on user selection
 
 // pass in an individual id and pull a sample and related otu_ids
 function chartcreation(person_id) {
@@ -84,6 +84,10 @@ function chartcreation(person_id) {
     });
 };
 
+
+//fuction to use d3 to get json file data and look for 'metadata', id, 
+//and add to demographic table
+//add the attributes to an object for the id passed in
 function buildTable(person_id) {
     d3.json("samples.json").then((data) => {
         var meta_data = data.metadata;
@@ -133,12 +137,12 @@ function buildTable(person_id) {
     });
 };
 
-
+//default data that is passed into the functions above
 function init() {
     d3.json("samples.json").then(data => {
         console.log("read samples");
         console.log(data);
-    
+        //data passed into drop down allowing user to select addtional ids
         let dropdownMenu = d3.select("#selDataset");
         data.names.forEach((name) => {
             dropdownMenu.append('option').text(name);
@@ -149,10 +153,12 @@ function init() {
         buildTable(first_name);
     });
 }
+//once user makes a new selection in the drop down, the new ids are passed to the functions above
 function optionChanged(value) {
     console.log(value);
     chartcreation(value);
     buildTable(value);
 }
 
+//run on page load
 init();
