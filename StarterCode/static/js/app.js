@@ -10,25 +10,29 @@ function chartcreation(person_id) {
         var personlist = person_samples.filter(
             personobject => personobject.id == person_id);
 
-        person = personlist[0];
+        var person = personlist[0];
         console.log(person);
         
         let ids = person.otu_ids;
-        let order_ids = ids.reverse().slice(-10);
-        let otu_ids = []
-        for (var i = 0; i < 10; i++) {
-            order_ids[i]
-            otu_ids.push("OTU "+order_ids[i])
-        }
-        
-        console.log(otu_ids)
+        //first pass at formatting and sorting lables for the horizontal chart
+        // let order_ids = ids.reverse().slice(-10);
+        // let otu_ids = []
+        // for (var i = 0; i < 10; i++) {
+        //     order_ids[i]
+        //     otu_ids.push("OTU "+order_ids[i])
+        // }
+        //console.log(otu_ids)
         let otu_labels = person.otu_labels.reverse().slice(-10);
         let sample_values = person.sample_values.reverse().slice(-10);
         
         //setup chart components for horizontal bar chart
         var trace1 = {
             x: sample_values,
-            y: otu_ids,
+            //y: otu_ids, alternative way to format bar graph
+            y: ids
+                .slice(0,10)
+                .map((x) => `OTU ${x}`)
+                .reverse(),
             text: otu_labels,
             type: "bar",
             orientation: "h"
@@ -80,6 +84,27 @@ function chartcreation(person_id) {
     });
 };
 
+function buildTable(person_id) {
+    d3.json("samples.json").then((data) => {
+        var meta_data = data.metadata;
+        var personlist = meta_data.filter(
+            personobject => personobject.id == person_id);
+            
+        var person = personlist[0];
+        var table = d3.select("#sample-metadata");
+        
+        //clear existing data from table
+        table.html("");
+        Object.entries(person).forEach(([key,value]) => {
+            table.append("h6").text(`${key.toUpperCase()}: ${value}`);
+        });
+
+        // gauge functionality here as it uses the metadata
+
+        
+    });
+};
+
 
 function init() {
     d3.json("samples.json").then(data => {
@@ -93,12 +118,13 @@ function init() {
 
         var first_name = data.names[0];
         chartcreation(first_name);
-
+        buildTable(first_name);
     });
 }
 function optionChanged(value) {
     console.log(value);
     chartcreation(value);
+    buildTable(value);
 }
 
 init();
